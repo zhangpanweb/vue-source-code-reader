@@ -224,24 +224,24 @@ export function createComponentInstanceForVnode (
 }
 
 function installComponentHooks (data: VNodeData) {
-  const hooks = data.hook || (data.hook = {})
-  for (let i = 0; i < hooksToMerge.length; i++) {
+  const hooks = data.hook || (data.hook = {}) // 获取 data 中的所有 hook
+  for (let i = 0; i < hooksToMerge.length; i++) { // 遍历 hooksToMerge 中的 hook
     const key = hooksToMerge[i]
-    const existing = hooks[key]
-    const toMerge = componentVNodeHooks[key]
-    if (existing !== toMerge && !(existing && existing._merged)) {
+    const existing = hooks[key] // data 中的对应 hook 方法
+    const toMerge = componentVNodeHooks[key] // 需要 merge 的 hook 方法
+    if (existing !== toMerge && !(existing && existing._merged)) { // existing 和 toMerge 不等，并且还未 merge
       hooks[key] = existing ? mergeHook(toMerge, existing) : toMerge
     }
   }
 }
 
 function mergeHook (f1: any, f2: any): Function {
-  const merged = (a, b) => {
+  const merged = (a, b) => { // merge f1 和 f2，即分别指向 f1 和 f2
     // flow complains about extra args which is why we use any
     f1(a, b)
     f2(a, b)
   }
-  merged._merged = true
+  merged._merged = true // 标志已经 merge 过了
   return merged
 }
 

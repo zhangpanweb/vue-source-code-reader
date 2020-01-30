@@ -31,7 +31,7 @@ export function initRender (vm: Component) {
   vm._c = (a, b, c, d) => createElement(vm, a, b, c, d, false)
   // normalization is always applied for the public version, used in
   // user-written render functions.
-  vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true)
+  vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true) // 挂载 createElement 方法
 
   // $attrs & $listeners are exposed for easier HOC creation.
   // they need to be reactive so that HOCs using them are always updated
@@ -72,7 +72,7 @@ export function renderMixin (Vue: Class<Component>) {
 
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
-    vm.$vnode = _parentVnode
+    vm.$vnode = _parentVnode // 将 _parentVnode 挂载再 vm.$vnode 上
     // render self
     let vnode
     try {
@@ -109,7 +109,7 @@ export function renderMixin (Vue: Class<Component>) {
       vnode = createEmptyVNode()
     }
     // set parent
-    vnode.parent = _parentVnode
+    vnode.parent = _parentVnode // 设置 vnode parent 属性
     return vnode
   }
 }

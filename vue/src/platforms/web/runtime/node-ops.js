@@ -1,4 +1,7 @@
 /* @flow */
+/**
+ * 实现一些在 web 平台上实际操作 DOM 的方法
+ */
 
 import { namespaceMap } from 'web/util/index'
 

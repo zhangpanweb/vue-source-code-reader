@@ -6,15 +6,15 @@ import { inBrowser, inWeex } from './env'
 import { isPromise } from 'shared/util'
 
 export function handleError (err: Error, vm: any, info: string) {
-  if (vm) {
+  if (vm) { // 如果存在 vm
     let cur = vm
-    while ((cur = cur.$parent)) {
+    while ((cur = cur.$parent)) { // 往上上溯
       const hooks = cur.$options.errorCaptured
-      if (hooks) {
-        for (let i = 0; i < hooks.length; i++) {
+      if (hooks) { // 若上溯到e rrorCaptured 方法
+        for (let i = 0; i < hooks.length; i++) { // 依次执行上溯到的 errorCaptured 方法
           try {
-            const capture = hooks[i].call(cur, err, vm, info) === false
-            if (capture) return
+            const capture = hooks[i].call(cur, err, vm, info) === false // 判断是否捕获此错误
+            if (capture) return // 若捕获错误，则什么都不用另外做
           } catch (e) {
             globalHandleError(e, cur, 'errorCaptured hook')
           }
@@ -22,14 +22,14 @@ export function handleError (err: Error, vm: any, info: string) {
       }
     }
   }
-  globalHandleError(err, vm, info)
+  globalHandleError(err, vm, info) // 错误上溯到全局处理
 }
 
 export function invokeWithErrorHandling (
-  handler: Function,
-  context: any,
-  args: null | any[],
-  vm: any,
+  handler: Function, // 具体需要执行的方法
+  context: any, // 执行上下文
+  args: null | any[], // 额外参数
+  vm: any, // vm
   info: string
 ) {
   let res
@@ -45,9 +45,9 @@ export function invokeWithErrorHandling (
 }
 
 function globalHandleError (err, vm, info) {
-  if (config.errorHandler) {
+  if (config.errorHandler) { // 如果有配置全局错误处理器
     try {
-      return config.errorHandler.call(null, err, vm, info)
+      return config.errorHandler.call(null, err, vm, info) // 执行全局错误处理函数
     } catch (e) {
       logError(e, null, 'config.errorHandler')
     }

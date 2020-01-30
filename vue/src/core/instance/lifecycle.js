@@ -22,8 +22,8 @@ export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
 
 export function setActiveInstance(vm: Component) {
-  const prevActiveInstance = activeInstance
-  activeInstance = vm
+  const prevActiveInstance = activeInstance // 将现在激活的实例存放在 prevActiveInstance 中
+  activeInstance = vm // 将传入的 vm 放在 activeInstance 中
   return () => {
     activeInstance = prevActiveInstance
   }
@@ -143,20 +143,20 @@ export function mountComponent (
   el: ?Element,
   hydrating?: boolean
 ): Component {
-  vm.$el = el
-  if (!vm.$options.render) {
+  vm.$el = el // 将跟节点绑定在 $el 上
+  if (!vm.$options.render) { // 如果没有 render 方法
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
       /* istanbul ignore if */
       if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') ||
-        vm.$options.el || el) {
+        vm.$options.el || el) { // 没有 render 方法但是有 template 方法，runtime-only 不支持
         warn(
           'You are using the runtime-only build of Vue where the template ' +
           'compiler is not available. Either pre-compile the templates into ' +
           'render functions, or use the compiler-included build.',
           vm
         )
-      } else {
+      } else { // 既没有 render 方法也没有 template
         warn(
           'Failed to mount component: template or render function not defined.',
           vm
@@ -164,7 +164,7 @@ export function mountComponent (
       }
     }
   }
-  callHook(vm, 'beforeMount')
+  callHook(vm, 'beforeMount') // 执行 beforeMount 生命周期
 
   let updateComponent
   /* istanbul ignore if */
@@ -194,8 +194,10 @@ export function mountComponent (
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
+  // 第一次初始化的时候会执行一次 updateComponent，会调用 vm._render 生产虚拟DOM，然后执行 vm._update 更新DOM
+  // 当 vm 实例检测的数据发生变化时，会执行 updateComponent
   new Watcher(vm, updateComponent, noop, {
-    before () {
+    before () { // 若已经挂载并且没有被 destroy
       if (vm._isMounted && !vm._isDestroyed) {
         callHook(vm, 'beforeUpdate')
       }
@@ -206,8 +208,8 @@ export function mountComponent (
   // manually mounted instance, call mounted on self
   // mounted is called for render-created child components in its inserted hook
   if (vm.$vnode == null) {
-    vm._isMounted = true
-    callHook(vm, 'mounted')
+    vm._isMounted = true // 已经挂载的标识符
+    callHook(vm, 'mounted') // 调用 mounted 生命周期
   }
   return vm
 }
@@ -322,10 +324,10 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
   pushTarget()
-  const handlers = vm.$options[hook]
+  const handlers = vm.$options[hook] // 找到对应的方法
   const info = `${hook} hook`
-  if (handlers) {
-    for (let i = 0, j = handlers.length; i < j; i++) {
+  if (handlers) { // 如果存在对应方法
+    for (let i = 0, j = handlers.length; i < j; i++) { // 依次执行对应方法
       invokeWithErrorHandling(handlers[i], vm, null, vm, info)
     }
   }

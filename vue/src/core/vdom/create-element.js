@@ -97,18 +97,19 @@ export function _createElement (
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
     if (config.isReservedTag(tag)) {
-      // platform built-in elements
+      // platform built-in elements // 如果是内置节点，直接创建普通 vnode
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component
-      vnode = createComponent(Ctor, data, context, children, tag)
+      // component // 如果 tag 是 component 类型
+      vnode = createComponent(Ctor, data, context, children, tag) // 通过 createComponent 创建 vnode
     } else {
       // unknown or unlisted namespaced elements
       // check at runtime because it may get assigned a namespace when its
       // parent normalizes children
+      // 创建一个位置标签 vnode
       vnode = new VNode(
         tag, data, children,
         undefined, undefined, context

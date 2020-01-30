@@ -30,9 +30,9 @@ export default class VNode {
   fnScopeId: ?string; // functional scope id support
 
   constructor (
-    tag?: string,
+    tag?: string, // tag 标志，唯一标识符
     data?: VNodeData,
-    children?: ?Array<VNode>,
+    children?: ?Array<VNode>, // 子 vnode
     text?: string,
     elm?: Node,
     context?: Component,
@@ -78,7 +78,7 @@ export const createEmptyVNode = (text: string = '') => {
   return node
 }
 
-export function createTextVNode (val: string | number) {
+export function createTextVNode (val: string | number) { // 创建一个文本节点
   return new VNode(undefined, undefined, undefined, String(val))
 }
 

@@ -213,19 +213,19 @@ const builds = {
   }
 }
 
-function genConfig (name) {
-  const opts = builds[name]
+function genConfig (name) { // 获取 rollup 配置
+  const opts = builds[name] // 获取具体某个配置
   const config = {
-    input: opts.entry,
+    input: opts.entry, // 入口
     external: opts.external,
     plugins: [
-      replace({
+      replace({ // 全局变量
         __WEEX__: !!opts.weex,
         __WEEX_VERSION__: weexVersion,
         __VERSION__: version
       }),
       flow(),
-      alias(Object.assign({}, aliases, opts.alias))
+      alias(Object.assign({}, aliases, opts.alias)) // alias
     ].concat(opts.plugins || []),
     output: {
       file: opts.dest,
@@ -241,14 +241,14 @@ function genConfig (name) {
     }
   }
 
-  if (opts.env) {
+  if (opts.env) { // 全局环境变量
     config.plugins.push(replace({
       'process.env.NODE_ENV': JSON.stringify(opts.env)
     }))
   }
 
   if (opts.transpile !== false) {
-    config.plugins.push(buble())
+    config.plugins.push(buble()) // buble compiler
   }
 
   Object.defineProperty(config, '_name', {

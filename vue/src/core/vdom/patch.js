@@ -163,7 +163,7 @@ export function createPatchFunction (backend) {
         }
       }
 
-      vnode.elm = vnode.ns
+      vnode.elm = vnode.ns // 创建DOM节点
         ? nodeOps.createElementNS(vnode.ns, tag)
         : nodeOps.createElement(tag, vnode)
       setScope(vnode)
@@ -188,11 +188,11 @@ export function createPatchFunction (backend) {
           insert(parentElm, vnode.elm, refElm)
         }
       } else {
-        createChildren(vnode, children, insertedVnodeQueue)
+        createChildren(vnode, children, insertedVnodeQueue) // 创建子节点
         if (isDef(data)) {
           invokeCreateHooks(vnode, insertedVnodeQueue)
         }
-        insert(parentElm, vnode.elm, refElm)
+        insert(parentElm, vnode.elm, refElm) // 插入节点
       }
 
       if (process.env.NODE_ENV !== 'production' && data && data.pre) {
@@ -287,10 +287,10 @@ export function createPatchFunction (backend) {
         checkDuplicateKeys(children)
       }
       for (let i = 0; i < children.length; ++i) {
-        createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i)
+        createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i) //递归创建elm
       }
-    } else if (isPrimitive(vnode.text)) {
-      nodeOps.appendChild(vnode.elm, nodeOps.createTextNode(String(vnode.text)))
+    } else if (isPrimitive(vnode.text)) { // 如果 vnode.text 是原生类型
+      nodeOps.appendChild(vnode.elm, nodeOps.createTextNode(String(vnode.text))) // 创建 text 节点并且插入到 elm 中，实际的DOM操作
     }
   }
 
@@ -711,9 +711,9 @@ export function createPatchFunction (backend) {
       isInitialPatch = true
       createElm(vnode, insertedVnodeQueue)
     } else {
-      const isRealElement = isDef(oldVnode.nodeType)
+      const isRealElement = isDef(oldVnode.nodeType) // 是浏览器的原生节点
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
-        // patch existing root node
+        // patch existing root node // patch 已存在的根节点
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly)
       } else {
         if (isRealElement) {
@@ -740,12 +740,13 @@ export function createPatchFunction (backend) {
           }
           // either not server-rendered, or hydration failed.
           // create an empty node and replace it
+          // 不是服务端渲染，或者 hydrate 失败的情况下，创建一个空的 vnode，替换原来的 oldVnode
           oldVnode = emptyNodeAt(oldVnode)
         }
 
         // replacing existing element
-        const oldElm = oldVnode.elm
-        const parentElm = nodeOps.parentNode(oldElm)
+        const oldElm = oldVnode.elm // 获取元素
+        const parentElm = nodeOps.parentNode(oldElm) // 获取父元素
 
         // create new node
         createElm(

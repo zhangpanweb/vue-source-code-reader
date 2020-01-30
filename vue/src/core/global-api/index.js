@@ -29,7 +29,7 @@ export function initGlobalAPI (Vue: GlobalAPI) {
       )
     }
   }
-  Object.defineProperty(Vue, 'config', configDef)
+  Object.defineProperty(Vue, 'config', configDef) // 配置 config 方法
 
   // exposed util methods.
   // NOTE: these are not considered part of the public API - avoid relying on
