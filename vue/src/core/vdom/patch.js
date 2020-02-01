@@ -580,7 +580,7 @@ export function createPatchFunction (backend) {
       vnode.parent.data.pendingInsert = queue
     } else {
       for (let i = 0; i < queue.length; ++i) {
-        queue[i].data.hook.insert(queue[i])
+        queue[i].data.hook.insert(queue[i]) // 执行 insert 钩子
       }
     }
   }

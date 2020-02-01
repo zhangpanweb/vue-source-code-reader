@@ -21,7 +21,7 @@ function ensureCtor (comp: any, base) {
     comp = comp.default
   }
   return isObject(comp)
-    ? base.extend(comp)
+    ? base.extend(comp) // 如果拿到的 comp 是普通对象，通过 base.extend 创建构造函数
     : comp
 }
 
@@ -32,7 +32,7 @@ export function createAsyncPlaceholder (
   children: ?Array<VNode>,
   tag: ?string
 ): VNode {
-  const node = createEmptyVNode()
+  const node = createEmptyVNode() // 创建一个空的注释节点占位
   node.asyncFactory = factory
   node.asyncMeta = { data, context, children, tag }
   return node
@@ -55,7 +55,7 @@ export function resolveAsyncComponent (
     return factory.loadingComp
   }
 
-  if (isDef(factory.contexts)) {
+  if (isDef(factory.contexts)) { // 如果有多个地方同时加载，只需加载一次
     // already pending
     factory.contexts.push(context)
   } else {
@@ -63,7 +63,7 @@ export function resolveAsyncComponent (
     let sync = true
 
     const forceRender = (renderCompleted: boolean) => {
-      for (let i = 0, l = contexts.length; i < l; i++) {
+      for (let i = 0, l = contexts.length; i < l; i++) { // 遍历 contexts，依次在对应 contexts 上下文中调用 $forceUpdate
         contexts[i].$forceUpdate()
       }
 
@@ -88,20 +88,20 @@ export function resolveAsyncComponent (
         (reason ? `\nReason: ${reason}` : '')
       )
       if (isDef(factory.errorComp)) {
-        factory.error = true
+        factory.error = true // error 设置为 true
         forceRender(true)
       }
     })
 
-    const res = factory(resolve, reject)
+    const res = factory(resolve, reject) // 执行 factory
 
     if (isObject(res)) {
-      if (isPromise(res)) {
+      if (isPromise(res)) { // 如果采用的是 Promise 的异步组件
         // () => Promise
         if (isUndef(factory.resolved)) {
-          res.then(resolve, reject)
+          res.then(resolve, reject) // 执行 res.then
         }
-      } else if (isPromise(res.component)) {
+      } else if (isPromise(res.component)) { // 高级异步组件的情况
         res.component.then(resolve, reject)
 
         if (isDef(res.error)) {
@@ -110,9 +110,9 @@ export function resolveAsyncComponent (
 
         if (isDef(res.loading)) {
           factory.loadingComp = ensureCtor(res.loading, baseCtor)
-          if (res.delay === 0) {
+          if (res.delay === 0) { // 如果延迟为 0，则立马将 laoding 设置为 true
             factory.loading = true
-          } else {
+          } else { // 否则，延迟执行
             setTimeout(() => {
               if (isUndef(factory.resolved) && isUndef(factory.error)) {
                 factory.loading = true

@@ -8,7 +8,7 @@ import { isIE, isIOS, isNative } from './env'
 const callbacks = []
 let pending = false
 
-function flushCallbacks () {
+function flushCallbacks () { // 执行所有 callbacks
   pending = false
   const copies = callbacks.slice(0)
   callbacks.length = 0
@@ -37,7 +37,7 @@ let timerFunc
 // completely stops working after triggering a few times... so, if native
 // Promise is available, we will use it:
 /* istanbul ignore next, $flow-disable-line */
-if (typeof Promise !== 'undefined' && isNative(Promise)) {
+if (typeof Promise !== 'undefined' && isNative(Promise)) { // 是否有原生 Promise 支持，如果有使用原生 Promise
   const p = Promise.resolve()
   timerFunc = () => {
     p.then(flushCallbacks)
@@ -52,7 +52,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   isNative(MutationObserver) ||
   // PhantomJS and iOS 7.x
   MutationObserver.toString() === '[object MutationObserverConstructor]'
-)) {
+)) { // 是否支持 MutationObserver
   // Use MutationObserver where native Promise is not available,
   // e.g. PhantomJS, iOS7, Android 4.4
   // (#6466 MutationObserver is unreliable in IE11)
@@ -66,14 +66,14 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
     counter = (counter + 1) % 2
     textNode.data = String(counter)
   }
-} else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
+} else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) { // 是否有原生 setImmediate 支持
   // Fallback to setImmediate.
   // Techinically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = () => {
     setImmediate(flushCallbacks)
   }
-} else {
+} else { // 退化至使用 setTimeout(() => {}, 0)
   // Fallback to setTimeout.
   timerFunc = () => {
     setTimeout(flushCallbacks, 0)
@@ -82,7 +82,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 
 export function nextTick (cb?: Function, ctx?: Object) {
   let _resolve
-  callbacks.push(() => {
+  callbacks.push(() => { // 将 cb 推入 callbacks 中
     if (cb) {
       try {
         cb.call(ctx)
@@ -94,11 +94,11 @@ export function nextTick (cb?: Function, ctx?: Object) {
     }
   })
   if (!pending) {
-    pending = true
+    pending = true // 更新标志
     timerFunc()
   }
   // $flow-disable-line
-  if (!cb && typeof Promise !== 'undefined') {
+  if (!cb && typeof Promise !== 'undefined') { // 提供一个当 cb 不传入时的 Promise 调用
     return new Promise(resolve => {
       _resolve = resolve
     })

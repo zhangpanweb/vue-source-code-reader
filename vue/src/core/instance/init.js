@@ -35,8 +35,8 @@ export function initMixin (Vue: Class<Component>) {
       // internal component options needs special treatment.
       initInternalComponent(vm, options)
     } else {
-      vm.$options = mergeOptions(
-        resolveConstructorOptions(vm.constructor),
+      vm.$options = mergeOptions( // 合并 options，将 vm.connstructor 的 options 和传入的 options 都挂载再 $options 上
+        resolveConstructorOptions(vm.constructor), // 获取 vm.constructor.options，相当于 Vue.options
         options || {},
         vm
       )
@@ -52,11 +52,11 @@ export function initMixin (Vue: Class<Component>) {
     initLifecycle(vm)
     initEvents(vm)
     initRender(vm)
-    callHook(vm, 'beforeCreate')
+    callHook(vm, 'beforeCreate') // 调用 beforeCreate 生命周期钩子
     initInjections(vm) // resolve injections before data/props
-    initState(vm)
+    initState(vm) // 初始化 props, data, methods, watch, computed 等属性
     initProvide(vm) // resolve provide after data/props
-    callHook(vm, 'created')
+    callHook(vm, 'created') // 调用 created 生命周期钩子
 
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
@@ -71,6 +71,7 @@ export function initMixin (Vue: Class<Component>) {
   }
 }
 
+// 初始化内部组件，挂载各类 vm.$options 参数
 export function initInternalComponent (vm: Component, options: InternalComponentOptions) {
   const opts = vm.$options = Object.create(vm.constructor.options)
   // doing this because it's faster than dynamic enumeration.
@@ -91,9 +92,9 @@ export function initInternalComponent (vm: Component, options: InternalComponent
 }
 
 export function resolveConstructorOptions (Ctor: Class<Component>) {
-  let options = Ctor.options
-  if (Ctor.super) {
-    const superOptions = resolveConstructorOptions(Ctor.super)
+  let options = Ctor.options // 获取构造函数的静态 options 属性
+  if (Ctor.super) { // 如果 Ctor 存在超类
+    const superOptions = resolveConstructorOptions(Ctor.super) // 递归解析超类的 options
     const cachedSuperOptions = Ctor.superOptions
     if (superOptions !== cachedSuperOptions) {
       // super option changed,

@@ -35,6 +35,8 @@ const sharedPropertyDefinition = {
   set: noop
 }
 
+// 将 sourceKey 对象上的 key 属性 代理到 target 对象上
+// 也就是 target[sourceKey][key] 的读写变为对 target[key] 的读写
 export function proxy (target: Object, sourceKey: string, key: string) {
   sharedPropertyDefinition.get = function proxyGetter () {
     return this[sourceKey][key]
@@ -144,10 +146,10 @@ function initData (vm: Component) {
         vm
       )
     } else if (!isReserved(key)) {
-      proxy(vm, `_data`, key)
+      proxy(vm, `_data`, key) // 将 vm._data.xx 代理到 vm.xx 上
     }
   }
-  // observe data
+  // observe data // 观察整个 data
   observe(data, true /* asRootData */)
 }
 

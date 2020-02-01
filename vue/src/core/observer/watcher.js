@@ -53,7 +53,7 @@ export default class Watcher {
     if (isRenderWatcher) {
       vm._watcher = this
     }
-    vm._watchers.push(this)
+    vm._watchers.push(this) // vm._watchers 用于监听数据变化并执行更新
     // options
     if (options) {
       this.deep = !!options.deep
@@ -168,7 +168,7 @@ export default class Watcher {
     } else if (this.sync) {
       this.run()
     } else {
-      queueWatcher(this)
+      queueWatcher(this) // 将当前 watcher 推入更新队列中
     }
   }
 
@@ -178,8 +178,8 @@ export default class Watcher {
    */
   run () {
     if (this.active) {
-      const value = this.get()
-      if (
+      const value = this.get() // 执行 get 进行求值
+      if ( // 如果新值不等于旧值，或者新值是对象，或者 deep 模式下
         value !== this.value ||
         // Deep watchers and watchers on Object/Arrays should fire even
         // when the value is the same, because the value may
@@ -192,7 +192,7 @@ export default class Watcher {
         this.value = value
         if (this.user) {
           try {
-            this.cb.call(this.vm, value, oldValue)
+            this.cb.call(this.vm, value, oldValue) // 执行回调，传入 value 和 oldValue
           } catch (e) {
             handleError(e, this.vm, `callback for watcher "${this.expression}"`)
           }

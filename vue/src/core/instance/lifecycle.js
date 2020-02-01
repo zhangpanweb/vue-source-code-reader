@@ -61,7 +61,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     const prevEl = vm.$el
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
-    vm._vnode = vnode
+    vm._vnode = vnode // 设置现在的 _vnode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) {
@@ -87,9 +87,9 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // updated in a parent's updated hook.
   }
 
-  Vue.prototype.$forceUpdate = function () {
+  Vue.prototype.$forceUpdate = function () { // 强制重新渲染
     const vm: Component = this
-    if (vm._watcher) {
+    if (vm._watcher) { // 如果对应 vm 实例上有 _watcher，则更新对应 watcher
       vm._watcher.update()
     }
   }
@@ -99,7 +99,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     if (vm._isBeingDestroyed) {
       return
     }
-    callHook(vm, 'beforeDestroy')
+    callHook(vm, 'beforeDestroy') // beforedDestroy 钩子函数调用
     vm._isBeingDestroyed = true
     // remove self from parent
     const parent = vm.$parent
@@ -124,7 +124,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // invoke destroy hooks on current rendered tree
     vm.__patch__(vm._vnode, null)
     // fire destroyed hook
-    callHook(vm, 'destroyed')
+    callHook(vm, 'destroyed') // destroyed 钩子函数调用
     // turn off all instance listeners.
     vm.$off()
     // remove __vue__ reference
@@ -197,8 +197,8 @@ export function mountComponent (
   // 第一次初始化的时候会执行一次 updateComponent，会调用 vm._render 生产虚拟DOM，然后执行 vm._update 更新DOM
   // 当 vm 实例检测的数据发生变化时，会执行 updateComponent
   new Watcher(vm, updateComponent, noop, {
-    before () { // 若已经挂载并且没有被 destroy
-      if (vm._isMounted && !vm._isDestroyed) {
+    before () {
+      if (vm._isMounted && !vm._isDestroyed) { // 若已经挂载并且没有被 destroy，调用 beforeUpdate 钩子函数
         callHook(vm, 'beforeUpdate')
       }
     }

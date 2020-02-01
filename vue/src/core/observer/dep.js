@@ -20,17 +20,17 @@ export default class Dep {
     this.subs = []
   }
 
-  addSub (sub: Watcher) {
+  addSub (sub: Watcher) { // 添加 sub
     this.subs.push(sub)
   }
 
-  removeSub (sub: Watcher) {
+  removeSub (sub: Watcher) { // 移除 sub
     remove(this.subs, sub)
   }
 
   depend () {
     if (Dep.target) {
-      Dep.target.addDep(this)
+      Dep.target.addDep(this) // 添加依赖
     }
   }
 
@@ -43,7 +43,7 @@ export default class Dep {
       // order
       subs.sort((a, b) => a.id - b.id)
     }
-    for (let i = 0, l = subs.length; i < l; i++) {
+    for (let i = 0, l = subs.length; i < l; i++) { // 按照 id 顺序执行 sub 更新
       subs[i].update()
     }
   }
@@ -52,6 +52,7 @@ export default class Dep {
 // The current target watcher being evaluated.
 // This is globally unique because only one watcher
 // can be evaluated at a time.
+// 现在的全局唯一的 watcher
 Dep.target = null
 const targetStack = []
 

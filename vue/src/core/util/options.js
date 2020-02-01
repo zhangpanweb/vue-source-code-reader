@@ -147,10 +147,10 @@ function mergeHook (
   parentVal: ?Array<Function>,
   childVal: ?Function | ?Array<Function>
 ): ?Array<Function> {
-  const res = childVal
+  const res = childVal // 如果不存在 childVal，返回 parentVal
     ? parentVal
-      ? parentVal.concat(childVal)
-      : Array.isArray(childVal)
+      ? parentVal.concat(childVal) // 如果存在 childVal 和 parentVal，则将 parentVal 和 childVal concat 到一起
+      : Array.isArray(childVal) // 如果存在 childVal 但是不存在 parentVal，返回 childVal 数组
         ? childVal
         : [childVal]
     : parentVal
@@ -406,7 +406,7 @@ export function mergeOptions (
   // but only if it is a raw options object that isn't
   // the result of another mergeOptions call.
   // Only merged options has the _base property.
-  if (!child._base) {
+  if (!child._base) { // 递归将 extends 和 mixins 合并到 parent 上
     if (child.extends) {
       parent = mergeOptions(parent, child.extends, vm)
     }

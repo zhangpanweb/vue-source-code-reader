@@ -15,13 +15,14 @@ export function initExtend (Vue: GlobalAPI) {
 
   /**
    * Class inheritance
+   * 类继承方法
    */
   Vue.extend = function (extendOptions: Object): Function {
     extendOptions = extendOptions || {}
-    const Super = this
+    const Super = this // 暂存现在的类为超类
     const SuperId = Super.cid
-    const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
-    if (cachedCtors[SuperId]) {
+    const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {}) // 获取之前缓存过的 Ctor
+    if (cachedCtors[SuperId]) { // 如果存在缓存，直接返回
       return cachedCtors[SuperId]
     }
 
@@ -31,28 +32,29 @@ export function initExtend (Vue: GlobalAPI) {
     }
 
     const Sub = function VueComponent (options) {
-      this._init(options)
+      this._init(options) // Vue组件的构造函数，内部调用 _init 方法进行初始化
     }
-    Sub.prototype = Object.create(Super.prototype)
-    Sub.prototype.constructor = Sub
-    Sub.cid = cid++
-    Sub.options = mergeOptions(
+    Sub.prototype = Object.create(Super.prototype) // 继承 Super
+    Sub.prototype.constructor = Sub // 恢复 constructor 指向
+    Sub.cid = cid++ // 设置 cid
+    Sub.options = mergeOptions( // 合并 Super 的 options 和传入的 options
       Super.options,
       extendOptions
     )
-    Sub['super'] = Super
+    Sub['super'] = Super // 将 Super 挂载再 Sub 的 super 属性上
 
     // For props and computed properties, we define the proxy getters on
     // the Vue instances at extension time, on the extended prototype. This
     // avoids Object.defineProperty calls for each instance created.
     if (Sub.options.props) {
-      initProps(Sub)
+      initProps(Sub) // 初始化属性
     }
     if (Sub.options.computed) {
-      initComputed(Sub)
+      initComputed(Sub) // 初始化构造属性
     }
 
     // allow further extension/mixin/plugin usage
+    // 扩展 Sub 的静态方法
     Sub.extend = Super.extend
     Sub.mixin = Super.mixin
     Sub.use = Super.use
@@ -75,7 +77,7 @@ export function initExtend (Vue: GlobalAPI) {
     Sub.sealedOptions = extend({}, Sub.options)
 
     // cache constructor
-    cachedCtors[SuperId] = Sub
+    cachedCtors[SuperId] = Sub // 缓存 Sub
     return Sub
   }
 }

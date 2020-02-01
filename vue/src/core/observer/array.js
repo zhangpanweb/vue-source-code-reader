@@ -21,7 +21,7 @@ const methodsToPatch = [
 /**
  * Intercept mutating methods and emit events
  */
-methodsToPatch.forEach(function (method) {
+methodsToPatch.forEach(function (method) { // 拦截数组的方法并且释放事件
   // cache original method
   const original = arrayProto[method]
   def(arrayMethods, method, function mutator (...args) {

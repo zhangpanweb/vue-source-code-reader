@@ -103,6 +103,7 @@ export function _createElement (
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+      // 如果是注册的 components，解析获得构造函数，然后将其作为 createComponent 入参获取 vnode
       // component // 如果 tag 是 component 类型
       vnode = createComponent(Ctor, data, context, children, tag) // 通过 createComponent 创建 vnode
     } else {
