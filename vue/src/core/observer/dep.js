@@ -20,7 +20,8 @@ export default class Dep {
     this.subs = []
   }
 
-  addSub (sub: Watcher) { // 添加 sub
+  // 添加 sub 到 this.subs 列表中
+  addSub (sub: Watcher) {
     this.subs.push(sub)
   }
 
@@ -28,9 +29,11 @@ export default class Dep {
     remove(this.subs, sub)
   }
 
+  // 添加依赖
+  // Dep.target 是现在正在执行的 watcher，调用 depend 也就是向此 watcher 添加 dep 依赖
   depend () {
     if (Dep.target) {
-      Dep.target.addDep(this) // 添加依赖
+      Dep.target.addDep(this)
     }
   }
 

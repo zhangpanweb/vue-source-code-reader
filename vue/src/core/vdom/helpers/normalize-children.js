@@ -28,6 +28,8 @@ export function simpleNormalizeChildren (children: any) {
 // e.g. <template>, <slot>, v-for, or when the children is provided by user
 // with hand-written render functions / JSX. In such cases a full normalization
 // is needed to cater to all possible types of children values.
+// 如果 children 是原生类型，直接调用 createTextVNode(children) 创建文本节点并返回
+// 如果 children 是数组，调用 normalizeArrayChildren 对数组 children 进行处理
 export function normalizeChildren (children: any): ?Array<VNode> {
   return isPrimitive(children)
     ? [createTextVNode(children)]

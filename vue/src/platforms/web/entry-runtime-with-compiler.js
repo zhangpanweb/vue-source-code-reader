@@ -19,7 +19,7 @@ Vue.prototype.$mount = function ( // 重写 mount 方法
   el?: string | Element,
   hydrating?: boolean
 ): Component {
-  el = el && query(el)
+  el = el && query(el) // 获取挂载元素
 
   /* istanbul ignore if */
   if (el === document.body || el === document.documentElement) { // 限制 Vue 被挂载在 body、html 等根节点上
@@ -31,10 +31,13 @@ Vue.prototype.$mount = function ( // 重写 mount 方法
 
   const options = this.$options // 获取 options
   // resolve template/el and convert to render function
-  if (!options.render) { // 如果 render 方法不存在
+  // 获取 render 方法
+  // 判断是否有 render 方法，如果没有 render 方法，但是有 template，则使用 compileToFunctions 将 template 转化为 render 方法
+  if (!options.render) {
     let template = options.template // 获取 template
     if (template) {
       if (typeof template === 'string') {
+        // 如果 template 是字符串并且以 # 开头，则获取此 id 下的元素字符串作为 template
         if (template.charAt(0) === '#') {
           template = idToTemplate(template)
           /* istanbul ignore if */
@@ -45,7 +48,8 @@ Vue.prototype.$mount = function ( // 重写 mount 方法
             )
           }
         }
-      } else if (template.nodeType) { // 如果 template 是元素，获取innerHTML
+      } else if (template.nodeType) {
+        // 如果 template 本来就是个元素，则获取其 innerHTML 作为 template
         template = template.innerHTML
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -54,6 +58,7 @@ Vue.prototype.$mount = function ( // 重写 mount 方法
         return this
       }
     } else if (el) {
+      // 如果没有 render 方法并且也没有 template，获取 le 的 outerHTML 作为 template
       template = getOuterHTML(el) // 获取 outerHTML 作为 template
     }
     if (template) {
@@ -62,6 +67,7 @@ Vue.prototype.$mount = function ( // 重写 mount 方法
         mark('compile')
       }
 
+      // 使用 compileToFunctions 将 template 转化为 render 和 staticRenderFns 方法
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,
@@ -79,6 +85,7 @@ Vue.prototype.$mount = function ( // 重写 mount 方法
       }
     }
   }
+  // 获取 render 方法后，调用原始的 mount 方法
   return mount.call(this, el, hydrating)
 }
 

@@ -1,6 +1,13 @@
-import App from './App.vue';
-
-new Vue({
+var app = new Vue({
   el: '#app',
-  render: h => h(App),
-});
+  render: function (createElement) {
+    return createElement('span', {
+       attrs: {
+          id: 'bbb'
+        },
+    }, this.message)
+  },
+  data: {
+    message: 'Hello Vue!'
+  }
+})

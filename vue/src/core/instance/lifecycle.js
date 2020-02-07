@@ -143,7 +143,12 @@ export function mountComponent (
   el: ?Element,
   hydrating?: boolean
 ): Component {
-  vm.$el = el // 将跟节点绑定在 $el 上
+  // 将跟节点绑定在 $el 上，作为 Vue 的实例属性
+  vm.$el = el
+
+  // 判断 render 方法 和 template 方法
+  // 对于 rutime-only 这个底层方法，必须要有 render 方法
+  // 如果没有 render 方法但是有 template，则提醒需要使用预编译
   if (!vm.$options.render) { // 如果没有 render 方法
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
@@ -164,10 +169,14 @@ export function mountComponent (
       }
     }
   }
-  callHook(vm, 'beforeMount') // 执行 beforeMount 生命周期
+
+  // 调用 beforeMount 生命周期方法
+  callHook(vm, 'beforeMount')
 
   let updateComponent
   /* istanbul ignore if */
+  // 定义 updateComponent 方法，挂载的主要方法
+  // 通过 vm._render() 获取需要挂载的 vnode，通过 vm._update 执行实际的 DOM 挂载操作
   if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
     updateComponent = () => {
       const name = vm._name
@@ -194,7 +203,7 @@ export function mountComponent (
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
-  // 第一次初始化的时候会执行一次 updateComponent，会调用 vm._render 生产虚拟DOM，然后执行 vm._update 更新DOM
+  // 第一次初始化的时候会执行一次 updateComponent，会调用 vm._render 获取 vnode，然后执行 vm._update 更新DOM
   // 当 vm 实例检测的数据发生变化时，会执行 updateComponent
   new Watcher(vm, updateComponent, noop, {
     before () {

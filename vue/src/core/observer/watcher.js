@@ -122,8 +122,18 @@ export default class Watcher {
     return value
   }
 
+
+  /**
+   * Dep 和 watcher 的关系是多对多关系
+   * 一个 Dep 可能会有多个 watcher 关注，一个 watcher 也可能关注多个 Dep
+   * Dep 的 subs 属性即为与这个 Dep 相关的 watcher 数组
+   * watcher 的 deps 属性为 这个 watcher 关注的 Dep 数组
+   */
+
   /**
    * Add a dependency to this directive.
+   * 将新的 dep 添加到 newDeps数组中，作为此 watcher 的一个新的 dep
+   * 并且如果之前没有添加过这个 dep，则把这个 watcher 的实例推入 dep 的 subs 中，作为此 dep 相关的 watcher 之一
    */
   addDep (dep: Dep) {
     const id = dep.id
@@ -141,16 +151,21 @@ export default class Watcher {
    */
   cleanupDeps () {
     let i = this.deps.length
+    // 遍历 deps
+    // 如果新的依赖列表中不再包含此依赖，则将 watcher 实例从此依赖的 subs 列表中去除
+    // 表示此 dep 不再与此 watcher 相关
     while (i--) {
       const dep = this.deps[i]
       if (!this.newDepIds.has(dep.id)) {
         dep.removeSub(this)
       }
     }
+    // 将 newDepIds 复制给 depIds，并且清空 newDepIds
     let tmp = this.depIds
     this.depIds = this.newDepIds
     this.newDepIds = tmp
     this.newDepIds.clear()
+    // 将 newDeps 复制给 deps，并将 newDeps 清空
     tmp = this.deps
     this.deps = this.newDeps
     this.newDeps = tmp

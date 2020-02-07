@@ -202,6 +202,10 @@ export function createPatchFunction (backend) {
       vnode.elm = nodeOps.createComment(vnode.text)
       insert(parentElm, vnode.elm, refElm)
     } else {
+      // 如果没有 tag，并且不是注释，则是文本节点，创建文本节点 DOM
+      // 将文本节点 DOM 赋值给 vnode.elm
+      // 将文本节点 DOM 插入到 parentElm DOM 中，直接的 DOM 操作
+      // 完成后，parentElm 所持有的引用内，子 DOM 已经被正确插入
       vnode.elm = nodeOps.createTextNode(vnode.text)
       insert(parentElm, vnode.elm, refElm)
     }
@@ -287,7 +291,8 @@ export function createPatchFunction (backend) {
         checkDuplicateKeys(children)
       }
       for (let i = 0; i < children.length; ++i) {
-        createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i) //递归创建elm
+        // 递归创建elm
+        createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i)
       }
     } else if (isPrimitive(vnode.text)) { // 如果 vnode.text 是原生类型
       nodeOps.appendChild(vnode.elm, nodeOps.createTextNode(String(vnode.text))) // 创建 text 节点并且插入到 elm 中，实际的DOM操作
@@ -302,6 +307,8 @@ export function createPatchFunction (backend) {
   }
 
   function invokeCreateHooks (vnode, insertedVnodeQueue) {
+    // 遍历 cbs.create 钩子函数
+    // 在 DOM 环境下，包括 updateAttrs、updateClass 等
     for (let i = 0; i < cbs.create.length; ++i) {
       cbs.create[i](emptyNode, vnode)
     }
@@ -697,6 +704,10 @@ export function createPatchFunction (backend) {
     }
   }
 
+  // patch 方法，执行 DOM 操作
+  // 注意，此方法中，很多内容都是直接的引用操作，比如 createElm 直接对 vnode 引用进行操作
+  // vnode.elm 中存放的是生成的 DOM
+  // 第一次挂载：通过遍历 children 生成 children 的 DOM，然后插入到 vnode.elm 中，最后把 vnode.elm 插入最上级元素中
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
@@ -740,7 +751,7 @@ export function createPatchFunction (backend) {
           }
           // either not server-rendered, or hydration failed.
           // create an empty node and replace it
-          // 不是服务端渲染，或者 hydrate 失败的情况下，创建一个空的 vnode，替换原来的 oldVnode
+          // 如果是原生元素，根据元素创建 vnode，替换原有的 oldVnode
           oldVnode = emptyNodeAt(oldVnode)
         }
 
