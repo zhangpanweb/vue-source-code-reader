@@ -44,7 +44,8 @@ const componentVNodeHooks = {
       const mountedNode: any = vnode // work around flow
       componentVNodeHooks.prepatch(mountedNode, mountedNode)
     } else {
-      const child = vnode.componentInstance = createComponentInstanceForVnode( // 为 vnode 创建组件实例
+       // 为 vnode 创建组件实例，并手动调用 $mount 进行挂载
+      const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
         activeInstance
       )

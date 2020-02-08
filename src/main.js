@@ -1,13 +1,7 @@
-var app = new Vue({
+import App from './App.vue'
+
+window.app = new Vue({
   el: '#app',
-  render: function (createElement) {
-    return createElement('span', {
-       attrs: {
-          id: 'bbb'
-        },
-    }, this.message)
-  },
-  data: {
-    message: 'Hello Vue!'
-  }
+  // 这里的 h 是 createElement 方法
+  render: h => h(App)
 })
