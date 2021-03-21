@@ -17,7 +17,7 @@ npm run serve
 
 - read code
 
-In browser, open http://localhost:8080/. Then in Sources tab of Chrome Dev tool, `src` folder in `.` of `webpack://`, You can see the source code in `src` folder. And in `top` `localhost:3000` `vue`, You can see the source code of Vue.
+In browser, open http://localhost:8080/. Then in Sources tab of Chrome Dev tool, `src` folder in `.` of `webpack://`, You can see the source code in `src` folder. And in `top` `localhost:8080` `vue`, You can see the source code of Vue.
 
 #### how
 
@@ -31,4 +31,4 @@ Run `npm run dev` in `vue` folder. It will generate `vue.js` and `vue.js.map` in
 
 - build outer project
 
-Using `npm run serve` will build outer project. It will generate source code of `src` folder and start server serving on `localhost:3000`.
+Using `npm run serve` will build outer project. It will generate source code of `src` folder and start server serving on `localhost:8080`.
